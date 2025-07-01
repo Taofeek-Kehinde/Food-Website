@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Add to Cart</title>
+  <link rel="shortcut icon" href="./assets/img/logo.png" type="image/x-icon">
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: sans-serif;
+      background: #f2f2f2;
+    }
+
+    /* Cart Toggle Button */
+    #cart-toggle {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: #000000;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      cursor: pointer;
+      border-radius: 6px;
+      z-index: 9998;
+    }
+
+    .cart-container {
+      position: fixed;
+      top: 0;
+      right: -320px;
+      width: 300px;
+      height: 100vh;
+      background: #fff;
+      border-left: 2px solid #ccc;
+      box-shadow: -2px 0 5px rgba(0,0,0,0.1);
+      padding: 20px;
+      overflow-y: auto;
+      z-index: 9999;
+      transition: right 0.3s ease, bottom 0.3s ease;
+    }
+
+    .cart-container.active {
+      right: 0;
+    }
+
+    .cart-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cart-header h3 {
+      margin: 0;
+      font-size: 20px;
+    }
+
+    .cart-header button {
+      background: none;
+      border: none;
+      font-size: 20px;
+      cursor: pointer;
+      color: red;
+    }
+
+    .cart-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+      gap: 10px;
+    }
+
+    .cart-item p {
+      margin: 0;
+      font-size: 14px;
+    }
+
+    .cart-item button {
+      background: #eee;
+      border: none;
+      padding: 5px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+    }
+
+    .cart-item span {
+      font-size: 14px;
+      min-width: 20px;
+      text-align: center;
+      display: inline-block;
+    }
+
+    .cart-total {
+      font-weight: bold;
+      margin-top: 20px;
+      font-size: 16px;
+    }
+
+    .order-btn {
+      margin-top: 15px;
+      background: green;
+      color: white;
+      padding: 12px;
+      border: none;
+      width: 100%;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .food-list {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 20px;
+      padding: 20px;
+    }
+
+    .food-card {
+      border: 1px solid #ccc;
+      padding: 15px;
+      background: #fff;
+      text-align: center;
+      border-radius: 8px;
+      transition: 0.3s;
+    }
+
+    .food-card:hover {
+      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+
+    .food-card img {
+      width: 100%;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 6px;
+    }
+
+    .food-card h4 {
+      margin: 10px 0 5px;
+      font-size: 16px;
+    }
+
+    .food-card p {
+      margin: 0;
+      color: #444;
+    }
+
+    .add-btn {
+      background: #000;
+      color: white;
+      border: none;
+      padding: 10px 15px;
+      margin-top: 10px;
+      cursor: pointer;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    /* Responsive Columns */
+    @media(max-width: 1024px) {
+      .food-list {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    @media(max-width: 768px) {
+      .food-list {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .cart-container {
+        width: 100%;
+        height: 300px;
+        right: 0;
+        bottom: -320px;
+        top: auto;
+        left: 0;
+        border-left: none;
+        border-top: 2px solid #ccc;
+      }
+
+      .cart-container.active {
+        bottom: 0;
+      }
+    }
+
+    @media(max-width: 480px) {
+      .food-list {
+        grid-template-columns: 1fr;
+      }
+
+      .food-card img {
+        height: 120px;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 🛒 Toggle Cart Button -->
+  <button id="cart-toggle">🛒 View Cart</button>
+
+
+  <div class="food-list">
+    <div class="food-card" data-name="MoiMoi" data-price="1500">
+      <img src="./assets/img/order/1.jpeg" alt="MoiMoi">
+      <h4>MoiMoi</h4>
+      <p>₦1,700</p>
+      <button class="add-btn" onclick="addToCart(this)">Add to Cart</button>
+    </div>
+
+    <div class="food-card" data-name="Jollof" data-price="1500">
+      <img src="./assets/img/order/2.jpeg" alt="Jollof">
+      <h4>Jollof Rice</h4>
+      <p>₦1,500</p>
+      <button class="add-btn" onclick="addToCart(this)">Add to Cart</button>
+    </div>
+
+
+        <div class="food-card" data-name="Suya" data-price="2200">
+      <img src="./assets/img/order/3.jpeg" alt="Suya">
+      <h4>Suya Meat</h4>
+      <p>₦2,200</p>
+      <button class="add-btn" onclick="addToCart(this)">Add to Cart</button>
+    </div>
+
+        <div class="food-card" data-name="Rice" data-price="1500">
+      <img src="./assets/img/order/4.jpeg" alt="Rice">
+      <h4>Rice and Chicken</h4>
+      <p>₦1,500</p>
+      <button class="add-btn" onclick="addToCart(this)">Add to Cart</button>
+    </div>
+
+        <div class="food-card" data-name="food" data-price="9200">
+      <img src="./assets/img/order/5.jpeg" alt="rice">
+      <h4>Family Food</h4>
+      <p>₦9,200</p>
+      <button class="add-btn" onclick="addToCart(this)">Add to Cart</button>
+    </div>
+
+        <div class="food-card" data-name="Spag" data-price="1200">
+      <img src="./assets/img/order/6.jpeg" alt="spag">
+      <h4>Spaghetti</h4>
+      <p>₦1,200</p>
+      <button class="add-btn" onclick="addToCart(this)">Add to Cart</button>
+    </div>
+
+        <div class="food-card" data-name="Yam" data-price="1500">
+     <img src="./assets/img/order/7.jpeg" alt="Yam">
+      <h4>Yam and Egg</h4>
+      <p>₦1,500</p>
+      <button class="add-btn" onclick="addToCart(this)">Add to Cart</button>
+    </div>
+
+        <div class="food-card" data-name="MoiMoi" data-price="2200">
+      <img src="./assets/img/order/8.jpeg" alt="MoiMoi">
+      <h4>MoiMoi</h4>
+      <p>₦2,200</p>
+      <button class="add-btn" onclick="addToCart(this)">Add to Cart</button>
+    </div>
+
+           <div class="food-card" data-name="Rice" data-price="3800">
+      <img src="./assets/img/order/9.jpeg" alt="Rice">
+      <h4>Rice and Big chicken</h4>
+      <p>₦3,800</p>
+      <button class="add-btn" onclick="addToCart(this)">Add to Cart</button>
+    </div>
+
+ 
+      <div class="food-card" data-name="Rice" data-price="1500">
+      <img src="./assets/img/order/10.jpeg" alt="Rice">
+      <h4>Rice</h4>
+      <p>₦1,500</p>
+      <button class="add-btn" onclick="addToCart(this)">Add to Cart</button>
+    </div>
+
+            <div class="food-card" data-name="swallow" data-price="2700">
+      <img src="./assets/img/order/11.jpeg" alt="swallow">
+      <h4>Amal with Dry Fish</h4>
+      <p>₦2,700</p>
+      <button class="add-btn" onclick="addToCart(this)">Add to Cart</button>
+    </div>
+
+        <div class="food-card" data-name="swallow" data-price="2000">
+      <img src="./assets/img/order/12.jpeg" alt="swallow">
+      <h4>Eba with Meats</h4>
+      <p>₦2,000</p>
+      <button class="add-btn" onclick="addToCart(this)">Add to Cart</button>
+    </div>
+
+  </div>
+
+  <div class="cart-container" id="cart">
+    <div class="cart-header">
+      <h3>🛒 Your Cart</h3>
+      <button onclick="toggleCart()">❌</button>
+    </div>
+    <div id="cart-items"></div>
+    <div class="cart-total">Total: ₦<span id="cart-total">0</span></div>
+    <button class="order-btn" onclick="placeOrder()">Order Now</button>
+  </div>
+
+  <script>
+    let cart = [];
+
+    function addToCart(btn) {
+      const card = btn.closest(".food-card");
+      const name = card.getAttribute("data-name");
+      const price = parseInt(card.getAttribute("data-price"));
+
+      const existing = cart.find(item => item.name === name);
+      if (existing) {
+        existing.qty += 1;
+      } else {
+        cart.push({ name, price, qty: 1 });
+      }
+      updateCart();
+    }
+
+    function updateCart() {
+      const cartItems = document.getElementById("cart-items");
+      const cartTotal = document.getElementById("cart-total");
+      cartItems.innerHTML = "";
+      let total = 0;
+
+      cart.forEach((item, index) => {
+        const itemTotal = item.qty * item.price;
+        total += itemTotal;
+        cartItems.innerHTML += `
+          <div class="cart-item">
+            <div>
+              <p><strong>${item.name}</strong></p>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <button onclick="decreaseQty(${index})">➖</button>
+                <span>${item.qty}</span>
+                <button onclick="increaseQty(${index})">➕</button>
+              </div>
+            </div>
+            <div style="text-align: right;">
+              <p>₦${itemTotal}</p>
+              <button onclick="removeItem(${index})" title="Remove">❌</button>
+            </div>
+          </div>
+        `;
+      });
+
+      cartTotal.textContent = total;
+    }
+
+    function removeItem(index) {
+      cart.splice(index, 1);
+      updateCart();
+    }
+
+    function increaseQty(index) {
+      cart[index].qty += 1;
+      updateCart();
+    }
+
+    function decreaseQty(index) {
+      if (cart[index].qty > 1) {
+        cart[index].qty -= 1;
+      } else {
+        removeItem(index);
+      }
+      updateCart();
+    }
+
+    function placeOrder() {
+      if (cart.length === 0) {
+        alert("Your cart is empty!");
+        return;
+      }
+
+      let message = "*Order Summary*%0A";
+      cart.forEach(item => {
+        message += `${item.name} x ${item.qty} = ₦${item.qty * item.price}%0A`;
+      });
+      const total = cart.reduce((sum, item) => sum + item.qty * item.price, 0);
+      message += `%0ATotal: ₦${total}`;
+
+      const phone = "2348119825334";
+      const whatsappURL = `https://wa.me/${phone}?text=${message}`;
+      window.open(whatsappURL, "_blank");
+    }
+
+    function toggleCart() {
+      const cartEl = document.getElementById("cart");
+      cartEl.classList.toggle("active");
+    }
+
+    document.getElementById("cart-toggle").addEventListener("click", toggleCart);
+  </script>
+</body>
+</html>
